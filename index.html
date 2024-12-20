@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sameer Sah >> HLS, M3U8 LIVE Video Player</title>
+    <link rel="shortcut icon" href="https://img.icons8.com/?size=100&id=XF1f9oTOPWEa&format=png&color=000000" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            font-family: Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #1f1f1f;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            width: 95%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        form {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: #333;
+            border-radius: 8px;
+            padding: 0 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group i {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+
+        body {
+            user-select: none;
+            /* Prevent text selection */
+        }
+
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: transparent;
+            color: #fff;
+            outline: none;
+            font-size: 1rem;
+            box-shadow: none;
+        }
+
+        .input-group input::placeholder {
+            color: #aaa;
+        }
+
+        button {
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50, #81C784);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        #player {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            background: #000;
+            height: 400px;
+        }
+
+        .telegram-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: #0088cc;
+            color: #fff;
+            padding: 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.5);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .telegram-toggle:hover {
+            background-color: #007ab8;
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.7);
+        }
+
+        .telegram-toggle img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .name-autho {
+            right: 223px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="https://x.com/i_sam33r" target="_blank" class="telegram-toggle">
+        <img src="https://x.com/favicon.ico" alt="twitter">
+        Follow me on X
+    </a>
+    <div class="container">
+
+
+        <h1>HLS Video Player</h1>
+
+        <H6 class="name-autho">BY: SAMEER SAH</H6>
+
+        <div id="player"></div>
+
+
+        <form id="videoForm" onsubmit="playVideo(event);">
+            <div class="input-group">
+                <i class="fas fa-link"></i>
+                <input type="text" id="link" name="link" placeholder="Enter MPD or HLS link">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-key"></i>
+                <input type="text" id="clearKeyPair" name="clearKeyPair"
+                    placeholder="Enter Clear Key ID and Key (e.g., keyId:key)">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="text" id="widevineLicenseUrl" name="widevineLicenseUrl"
+                    placeholder="Enter Widevine License URL (optional)">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-link"></i>
+                <input type="text" id="clearKeyUrl" name="clearKeyUrl" placeholder="Enter ClearKey URL (optional)">
+            </div>
+
+            <button type="submit">Play Video</button>
+        </form>
+    </div>
+
+
+    
+
+
+    <script src="https://ssl.p.jwpcdn.com/player/v/8.25.1/jwplayer.js"></script>
+
+
+    <!-- no right click -->
+    <script>
+        // Disable right-click
+        document.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+        });
+    </script>
+
+    <script>
+        // Block Save (Ctrl + S) and Open DevTools (F12) on every keypress
+        // Block Save (Ctrl + S), Open DevTools (F12), View Source (Ctrl + U) on every keypress
+        document.addEventListener('keydown', function (event) {
+            // Disable Ctrl + S (Save page)
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();  // Block save page action
+                alert('Saving is disabled on this page.');
+                return false;  // Prevent the save action
+            }
+
+            // Disable F12 (Developer Tools)
+            if (event.key === 'F12') {
+                event.preventDefault();  // Block F12 (DevTools)
+                alert('Developer Tools are disabled on this page.');
+                return false;  // Prevent opening dev tools
+            }
+
+            // Disable Ctrl + Shift + I (DevTools shortcut)
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'I') {
+                event.preventDefault();  // Block DevTools shortcut
+                alert('Developer Tools are disabled on this page.');
+                return false;  // Prevent opening dev tools
+            }
+
+            // Disable Ctrl + U (View Source)
+            if ((event.ctrlKey || event.metaKey) && event.key === 'u') {
+                event.preventDefault();  // Block view source
+                alert('Viewing the page source is disabled on this page.');
+                return false;  // Prevent opening the source code
+            }
+
+            // Ensure that multiple key presses still do not trigger the action
+            if ((event.ctrlKey || event.metaKey) && (event.key === 's' || event.key === 'F12' || event.key === 'u' || (event.ctrlKey && event.shiftKey && event.key === 'I'))) {
+                event.stopImmediatePropagation();  // Stop the event from bubbling up and triggering again
+            }
+        });
+
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function (event) {
+            event.preventDefault();  // Disable right-click
+        });
+
+
+
+
+        // Function to generate the embed code
+function generateEmbedCode(event) {
+    // Prevent form submission (we only need to generate the embed code)
+    if (event) event.preventDefault();
+
+    // Get the HLS/M3U8 link entered by the user
+    const link = document.getElementById('link').value;
+    if (!link) {
+        alert("Please provide a valid HLS/M3U8 link.");
+        return;
+    }
+
+    // Generate the embed code based on the link
+    const embedCode = `<iframe src="https://www.example.com/player?video=${encodeURIComponent(link)}" width="100%" height="400" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+
+    // Display the embed code in the textarea
+    const embedCodeContainer = document.getElementById('embedCodeContainer');
+    const embedCodeTextarea = document.getElementById('embedCode');
+    embedCodeTextarea.value = embedCode; // Insert the generated embed code
+    embedCodeContainer.style.display = 'block'; // Show the embed code section
+}
+
+// Optional: Function to directly initialize the player on your page (using HLS/M3U8 link)
+function setupPlayer(link) {
+    var playerInstance = jwplayer("player");
+    playerInstance.setup({
+        file: link,
+        type: "hls", // HLS stream type
+        width: "100%",
+        aspectratio: "16:9",
+        autostart: true
+    });
+}
+
+    </script>
+
+
+
+    <script>
+        jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+
+        async function playVideo(event) {
+            event.preventDefault();
+            var link = document.getElementById('link').value;
+            var clearKeyPair = document.getElementById('clearKeyPair').value;
+            var widevineLicenseUrl = document.getElementById('widevineLicenseUrl').value;
+            var clearKeyUrl = document.getElementById('clearKeyUrl').value;
+
+            if (!link) {
+                alert("Please provide a valid MPD or HLS link.");
+                return;
+            }
+
+            let clearKeyKid = null,
+                clearKey = null;
+
+            // Extract clear key ID and key from user input if provided
+            if (clearKeyPair) {
+                const keyPairSplit = clearKeyPair.split(':');
+                if (keyPairSplit.length === 2) {
+                    clearKeyKid = keyPairSplit[0];
+                    clearKey = keyPairSplit[1];
+                } else {
+                    alert("Please provide a valid Clear Key pair in the format keyId:key");
+                    return;
+                }
+            }
+
+            // If ClearKey URL is provided, make POST request to get kid and key
+            if (clearKeyUrl) {
+                try {
+                    const response = await fetch(clearKeyUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.keys && data.keys.length > 0) {
+                            const keyData = data.keys[0];
+                            clearKeyKid = base64ToHex(keyData.kid);
+                            clearKey = base64ToHex(keyData.k);
+                        } else {
+                            alert("Invalid response from ClearKey URL.");
+                            return;
+                        }
+                    } else {
+                        alert("Failed to fetch ClearKey information. Please check the ClearKey URL.");
+                        return;
+                    }
+                } catch (error) {
+                    console.error("Error fetching ClearKey data:", error);
+                    alert("An error occurred while fetching the ClearKey data.");
+                    return;
+                }
+            }
+
+            setupPlayer(link, clearKeyKid, clearKey, widevineLicenseUrl);
+        }
+
+        function setupPlayer(link, clearKeyKid, clearKey, widevineLicenseUrl) {
+            var playerInstance = jwplayer("player");
+            var source = {
+                "file": link,
+                "default": false
+            };
+
+            if (link.includes('.mpd')) {
+                source.type = "dash";
+                if (clearKeyKid && clearKey) {
+                    source.drm = {
+                        "clearkey": {
+                            "keyId": clearKeyKid,
+                            "key": clearKey
+                        }
+                    };
+                }
+                if (widevineLicenseUrl) {
+                    source.drm = source.drm || {};
+                    source.drm.widevine = {
+                        "url": widevineLicenseUrl
+                    };
+                }
+            } else if (link.includes('.m3u8')) {
+                source.type = "hls";
+                if (clearKeyKid && clearKey) {
+                    source.drm = {
+                        "clearkey": {
+                            "keyId": clearKeyKid,
+                            "key": clearKey
+                        }
+                    };
+                }
+            } else {
+                alert("Unsupported link format. Please provide a valid MPD or HLS link.");
+                return;
+            }
+
+            playerInstance.setup({
+                playlist: [{
+                    "sources": [source]
+                }],
+                width: "100%",
+                aspectratio: "16:9",
+                autostart: true,
+                cast: {
+                    appid: 'CC1AD845'
+                }
+            });
+        }
+
+        function base64ToHex(base64) {
+            const raw = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
+            let result = '';
+            for (let i = 0; i < raw.length; i++) {
+                const hex = raw.charCodeAt(i).toString(16);
+                result += (hex.length === 1 ? '0' : '') + hex;
+            }
+            return result;
+        }
+    </script>
+</body>
+
+</html>
